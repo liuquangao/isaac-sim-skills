@@ -108,13 +108,13 @@ character.set_variable("Action", "None")                         # stop
 "{character_prim_name} {CommandName} [params...]"
 ```
 
-### Built-in commands (verified from character_behavior.py:452-483)
+### Built-in commands (verified from character_behavior.py:452-483 + official docs)
 | Command | Syntax | Notes |
 |---|---|---|
 | `GoTo` | `GoTo x y z angle\|_` | `_` = no forced final rotation |
-| `Idle` | `Idle` | Stand in place |
-| `LookAround` | `LookAround` | |
-| `Sit` | `Sit` | |
+| `Idle` | `Idle <seconds>` | Stand in place for given duration, e.g. `Idle 10` |
+| `LookAround` | `LookAround <seconds>` | Head sway for given duration, e.g. `LookAround 10` |
+| `Sit` | `Sit <seat_prim_path> <seconds>` | Walk to seat prim and sit, e.g. `Sit /World/Chair 5`. Seat prim needs `walk_to_offset` and `interact_offset` child xforms. |
 | `GoToSection` | `GoToSection ...` | |
 | `GoToObject` | `GoToObject ...` | |
 | `Queue` / `Dequeue` | `Queue name` / `Dequeue name` | Multi-character queuing |
@@ -197,8 +197,10 @@ s.set("/exts/omni.anim.people/command_settings/number_of_loop", "inf")
 **Command file format** (one command per line, first token = prim name):
 ```
 Character GoTo 3.0 0.0 0.0 _
-Character Idle
+Character Idle 5
+Character LookAround 3
 Character GoTo -3.0 0.0 0.0 90
+Character Sit /World/Chair 5
 # lines starting with # are comments
 ```
 
@@ -267,6 +269,21 @@ Plug.Registry().RegisterPlugins(
 | `/exts/isaacsim.replicator.agent/asset_settings/default_biped_assets_path` | `AssetPaths.DEFAULT_BIPED_ASSET_PATH` | `<nucleus_root>/Isaac/People/Characters/Biped_Setup.usd` |
 | `/exts/isaacsim.replicator.agent/asset_settings/default_character_asset_path` | `AssetPaths.DEFAULT_CHARACTER_PATH` | `<nucleus_root>/Isaac/People/Characters/` |
 | `/exts/isaacsim.replicator.agent/characters_parent_prim_path` | `PrimPaths.CHARACTERS_PARENT_PATH` | `/World/Characters` |
+
+### isaacsim.replicator.agent — camera placement (persistent, from official docs)
+| Path | Default | Notes |
+|---|---|---|
+| `/persistent/exts/isaacsim.replicator.agent/aim_camera_to_character` | `True` | Camera tracks character |
+| `/persistent/exts/isaacsim.replicator.agent/character_focus_height` | `0.7` | Focus height offset (m) |
+| `/persistent/exts/isaacsim.replicator.agent/min_camera_distance` | `6.5` | Min distance to character (m) |
+| `/persistent/exts/isaacsim.replicator.agent/max_camera_distance` | `14.0` | Max distance to character (m) |
+| `/persistent/exts/isaacsim.replicator.agent/min_camera_height` | `2.0` | Must be > `character_focus_height` |
+| `/persistent/exts/isaacsim.replicator.agent/max_camera_height` | `3.0` | Must be < `max_camera_distance` |
+| `/persistent/exts/isaacsim.replicator.agent/min_camera_look_down_angle` | `0` | Degrees |
+| `/persistent/exts/isaacsim.replicator.agent/max_camera_look_down_angle` | `60` | Degrees |
+| `/persistent/exts/isaacsim.replicator.agent/min_camera_focallength` | `13` | mm |
+| `/persistent/exts/isaacsim.replicator.agent/max_camera_focallength` | `23` | mm |
+| `/persistent/exts/isaacsim.replicator.agent/randomize_camera_info` | `True` | Randomizes focal length |
 
 ---
 
@@ -341,6 +358,82 @@ while simulation_app.is_running():
 
 simulation_app.close()
 ```
+
+---
+
+## CommandResponse — Runtime Event Triggers (from official docs)
+
+Characters can be configured to react to runtime events (time, carb events, or physical incidents) using `CommandResponse`. This is configured in the IRA YAML config or injected programmatically.
+
+```yaml
+# In IRA YAML config under `response:` section
+CommandResponse:
+  name: "AlertResponse"
+  priority: 1                        # higher = takes precedence when multiple fire simultaneously
+  pick_agent: nearest                # all | first_available | nearest | furthest
+  resume: true                       # resume prior task after response completes
+  position: [0.0, 0.0, 0.0]         # optional: reference position for nearest/furthest selection
+  trigger:
+    type: time                       # time | carb_event | incident
+    time: 5.0                        # seconds into simulation
+  commands:
+    - "Character GoTo 0.0 0.0 0.0 _"
+    - "Character LookAround 5"
+```
+
+**Trigger types:**
+| Type | Config | When fires |
+|---|---|---|
+| `time` | `{type: time, time: 5.0}` | At N seconds into simulation |
+| `carb_event` | `{type: carb_event, event_name: "my_event"}` | When that carb event is dispatched |
+| `incident` | `{type: incident, incident_name: "fire_starts"}` | When an IRI physical event triggers |
+
+---
+
+## IRA YAML Configuration (full SDG pipeline)
+
+When running IRA as a full SDG pipeline (not just character simulation), configure via a YAML file.
+
+```yaml
+isaacsim.replicator.agent:
+  version: 0.7.1          # must match extension minor version (0.7.x)
+
+  global:
+    seed: 42
+    simulation_length: 300  # frames at 30 FPS → 300 = 10 seconds
+
+  scene:
+    asset_path: /path/to/environment.usd
+
+  sensor:
+    num: 4                  # number of cameras; reduce if VRAM errors occur
+
+  character:
+    num: 5
+    asset_path: /path/to/characters/
+    command_file: /path/to/commands.txt
+    spawn_area: NavMeshAreaName
+    navigation_area: NavMeshAreaName
+
+  robot:
+    nova_carter_num: 1
+    iw_hub_num: 0
+    write_data: true         # capture from robot cameras
+
+  replicator:
+    writer: IRABasicWriter
+    output_path: /path/to/output/
+```
+
+> **pip install note**: `tools/actor_sdg/sdg_scheduler.py` does NOT exist in pip installs (standalone only). Drive the pipeline from your own Python script using `SimulationApp` + IRA APIs directly.
+
+**Writer options:**
+| Writer | Key feature |
+|---|---|
+| `IRABasicWriter` | Default; RGB + bounding boxes + skeleton data |
+| `TaoWriter` | Adds occlusion filtering (shoulder/width/height thresholds) |
+| `StereoWriter` | Stereo camera pairs; outputs PFM depth + intrinsics JSON |
+| `RTSPWriter` | Real-time RTSP video stream; requires FFmpeg |
 
 ---
 
