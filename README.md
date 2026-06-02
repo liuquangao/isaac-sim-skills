@@ -12,8 +12,9 @@ All skills are verified against Isaac Sim **5.1.0.0** installed via **pip** (con
 | Skill | Trigger command | Description |
 |---|---|---|
 | [isaac-sim-person-simulation](skills/isaac-sim-person-simulation/SKILL.md) | `/isaac-sim-person-simulation` | Spawn and control human characters using `omni.anim.people` + IRA (`isaacsim.replicator.agent`). Covers AnimGraph variables, command injection, navigation, and the full spawn flow. |
+| [isaac-sim-sdg](skills/isaac-sim-sdg/SKILL.md) | `/isaac-sim-sdg` | Full SDG pipeline reference: IRA (actor simulation), IRO (object randomization), IRC (VLM captioning), IRI (physical events: fire/spill/topple), RTX sensor placement, writers (Basic/Tao/Stereo/RTSP), YAML config, and custom environment/character requirements. |
 
-> More skills coming: robot locomotion, SDG pipeline, sensor setup, multi-agent coordination.
+> More skills coming: robot locomotion, sensor setup, multi-agent coordination.
 
 ---
 
