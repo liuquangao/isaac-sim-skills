@@ -17,6 +17,23 @@ Isaac Sim's **Action and Event Data Generation** platform generates training dat
 | IRI | `isaacsim.replicator.incident` | Physical events (fire, spill, topple) |
 | — | `isaacsim.sensors.rtx.placement` | Optimal camera placement + calibration export |
 
+## Official Documentation
+
+| Topic | URL |
+|---|---|
+| Action & Event Data Generation (index) | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/index.html |
+| IRA — Actor Simulation tutorial | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/tutorial_replicator_agent.html |
+| IRA — Actor Control (commands, response) | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/ext_replicator-agent/actor_control.html |
+| IRA — Camera Control | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/ext_replicator-agent/camera_control.html |
+| IRA — Writer Control | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/ext_replicator-agent/writer_control.html |
+| IRA — Customization (env / character / anim) | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/ext_replicator-agent/customization.html |
+| IRO — Object Simulation tutorial | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/tutorial_replicator_object.html |
+| IRC — VLM Scene Captioning tutorial | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/tutorial_replicator_caption.html |
+| IRI — Physical Space Event Generation | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/tutorial_replicator_incident.html |
+| RTX Sensor Placement & Calibration | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/tutorial_sensors_rtx_placement.html |
+
+---
+
 > **pip install note**: All extensions live under `site-packages/isaacsim/extscache/`. There is no `python.sh` — launch with `conda activate isaaclab && python script.py`. The `tools/actor_sdg/sdg_scheduler.py` batch runner does NOT exist in pip installs (standalone only); drive everything from your own `SimulationApp` script.
 
 ---

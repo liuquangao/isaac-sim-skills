@@ -28,6 +28,19 @@ description: Reference guide for simulating human characters in Isaac Sim 5.1+ (
 
 ---
 
+## Official Documentation
+
+| Topic | URL |
+|---|---|
+| Action & Event Data Generation (index) | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/index.html |
+| Actor Simulation & SDG (tutorial) | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/tutorial_replicator_agent.html |
+| Actor Control (commands, injection, response) | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/ext_replicator-agent/actor_control.html |
+| Camera Control | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/ext_replicator-agent/camera_control.html |
+| Writer Control | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/ext_replicator-agent/writer_control.html |
+| Customization (env / character / animation) | https://docs.isaacsim.omniverse.nvidia.com/5.1.0/action_and_event_data_generation/ext_replicator-agent/customization.html |
+
+---
+
 ## Key Source Files (for debugging / reading internals)
 
 All paths are relative to the corresponding extscache directory.
