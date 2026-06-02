@@ -36,7 +36,7 @@ All skills are verified against Isaac Sim **5.1.0.0** installed via **pip** (con
 ### Install all skills
 
 ```bash
-git clone https://github.com/liuquangao/isaacsim-skills.git
+git clone https://github.com/liuquangao/isaac-sim-skills.git
 cd isaacsim-skills
 ./install.sh
 ```
